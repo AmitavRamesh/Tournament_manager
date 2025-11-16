@@ -1,0 +1,1320 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esports Tournament Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Orbitron:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <script src="config.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #f8f8f8;
+            line-height: 1.6;
+            height: 100%;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+            min-height: 100%;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #c9a96e;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-link {
+            font-family: 'Poppins', sans-serif;
+            color: #f8f8f8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #c9a96e;
+            background: rgba(201, 169, 110, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px 0;
+            min-height: calc(100% - 80px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(201, 169, 110, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #c9a96e, #b8941f);
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(201, 169, 110, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8f8f8;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(201, 169, 110, 0.5);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #f8f8f8;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #f8f8f8;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #c9a96e;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+        }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* Tournament List */
+        .tournament-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tournament-info h3 {
+            color: #c9a96e;
+            margin-bottom: 4px;
+        }
+
+        .tournament-meta {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #c9a96e;
+        }
+
+        .rank {
+            font-size: 24px;
+            font-weight: 700;
+            color: #c9a96e;
+            margin-right: 20px;
+            min-width: 40px;
+        }
+
+        .team-info {
+            flex: 1;
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f8f8f8;
+        }
+
+        /* Bracket */
+        .bracket {
+            display: flex;
+            gap: 40px;
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        .bracket-round {
+            min-width: 200px;
+        }
+
+        .bracket-match {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .match-team {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .match-team:last-child {
+            border-bottom: none;
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            border-radius: 50%;
+            border-top-color: #c9a96e;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav {
+                padding: 0 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .tournament-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .bracket {
+                gap: 20px;
+            }
+
+            .bracket-round {
+                min-width: 150px;
+            }
+        }
+
+        /* Admin Styles */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .status-completed {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <header class="header">
+   <nav class="nav">
+    <div class="logo" id="app-title">
+     Esports Tournament Manager
+    </div>
+    <ul class="nav-links">
+     <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+     <li><a href="#" class="nav-link" data-page="teams">Teams</a></li>
+     <li><a href="#" class="nav-link" data-page="leaderboard">Leaderboard</a></li>
+     <li><a href="#" class="nav-link" data-page="bracket">Bracket</a></li>
+     <li><a href="#" class="nav-link" data-page="register">Register</a></li>
+     <li><a href="#" class="nav-link" data-page="login">Login</a></li>
+     <li><a href="#" class="nav-link" data-page="profile" id="profile-nav" style="display: none;">Profile</a></li>
+     <li><a href="#" class="nav-link" data-page="admin" id="admin-nav" style="display: none;">Admin</a></li>
+    </ul>
+   </nav>
+  </header>
+  <main class="main">
+   <div class="container"><!-- Home Page -->
+    <div id="home" class="page active">
+    <h1 style="font-family: 'Orbitron', monospace; font-size: 48px; font-weight: 700; margin-bottom: 16px; background: linear-gradient(135deg, #c9a96e, #f8f8f8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase;">Featured Tournament</h1>     <p style="font-size: 20px; color: #888; margin-bottom: 40px;">Join the ultimate esports competition</p>
+     <div class="card">
+      <h2 id="tournament-name" style="color: #c9a96e; margin-bottom: 16px;">Championship Series 2024</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+       <div>
+        <p style="color: #888; margin-bottom: 8px;">Prize Pool: <span style="color: #c9a96e; font-weight: 600;">$50,000</span></p>
+        <p style="color: #888;">Teams Registered: <span id="team-count">0</span></p>
+       </div><span class="status-badge status-active">Active</span>
+      </div>
+      <div style="display: flex; gap: 16px;"><button class="btn" onclick="showPage('tournament-details')">View Details</button> <button class="btn-secondary btn" onclick="showPage('register')">Register Team</button>
+      </div>
+     </div>
+     <h3 style="margin: 40px 0 24px 0; color: #f8f8f8;">Recent Matches</h3>
+     <div class="grid grid-2" id="recent-matches"><!-- Recent matches will be populated here -->
+     </div>
+    </div><!-- Tournament Details -->
+    <div id="tournament-details" class="page"><button class="btn-secondary btn" onclick="showPage('home')" style="margin-bottom: 24px;">← Back to Home</button>
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Tournament Details</h1>
+     <div class="grid grid-2">
+      <div class="card">
+       <h3 style="color: #c9a96e; margin-bottom: 16px;">Tournament Info</h3>
+       <p><strong>Game:</strong> Valorant</p>
+       <p><strong>Format:</strong> 5v5 Single Elimination</p>
+       <p><strong>Prize Pool:</strong> $50,000</p>
+       <p><strong>Registration Deadline:</strong> March 15, 2024</p>
+       <p><strong>Tournament Start:</strong> March 20, 2024</p>
+      </div>
+      <div class="card">
+       <h3 style="color: #c9a96e; margin-bottom: 16px;">Rules &amp; Regulations</h3>
+       <ul style="color: #ccc; line-height: 1.8;">
+        <li>Teams must have 5 players + 1 substitute</li>
+        <li>All matches are best of 3</li>
+        <li>Finals are best of 5</li>
+        <li>No coaching during matches</li>
+        <li>Standard tournament rules apply</li>
+       </ul>
+      </div>
+     </div>
+    </div><!-- Team Registration -->
+    <div id="register" class="page">
+     <h1 id="registration-title" style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Team Registration</h1>
+     <div class="card" style="max-width: 600px;">
+      <form id="registration-form">
+       <div class="form-group"><label for="team-name" class="form-label">Team Name</label> <input type="text" id="team-name" class="form-input" required>
+       </div>
+       <div class="form-group"><label for="captain-email" class="form-label">Captain Email</label> <input type="email" id="captain-email" class="form-input" required>
+       </div>
+       <div class="form-group"><label for="team-members" class="form-label">Team Members (comma separated)</label> <input type="text" id="team-members" class="form-input" placeholder="Player1, Player2, Player3, Player4, Player5" required>
+       </div><button type="submit" class="btn" id="register-btn"> <span id="register-text">Register Team</span> <span id="register-loading" class="loading" style="display: none;"></span> </button>
+      </form>
+     </div>
+    </div><!-- Teams List -->
+    <div id="teams" class="page">
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Registered Teams</h1>
+     <div class="grid grid-3" id="teams-list"><!-- Teams will be populated here -->
+     </div>
+    </div><!-- Leaderboard -->
+    <div id="leaderboard" class="page">
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Leaderboard</h1>
+     <div class="card">
+      <div id="leaderboard-list"><!-- Leaderboard will be populated here -->
+      </div>
+     </div>
+    </div><!-- Bracket -->
+    <div id="bracket" class="page">
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Tournament Bracket</h1>
+     <div class="bracket" id="bracket-view"><!-- Bracket will be populated here -->
+     </div>
+    </div><!-- Login Page -->
+    <div id="login" class="page">
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Player Login</h1>
+     <div class="card" style="max-width: 500px; margin: 0 auto;">
+      <form id="login-form">
+       <div class="form-group"><label for="login-email" class="form-label">Email Address</label> <input type="email" id="login-email" class="form-input" required>
+       </div>
+       <div class="form-group"><label for="login-password" class="form-label">Password</label> <input type="password" id="login-password" class="form-input" required>
+       </div>
+       <div class="form-group" style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="remember-me" style="accent-color: #c9a96e;"> <label for="remember-me" style="color: #ccc; font-size: 14px;">Remember me</label>
+       </div><button type="submit" class="btn" id="login-btn" style="width: 100%; margin-bottom: 16px;"> <span id="login-text">Sign In</span> <span id="login-loading" class="loading" style="display: none;"></span> </button>
+       <div style="text-align: center;">
+        <p style="color: #888; margin-bottom: 12px;">Don't have an account?</p><button type="button" class="btn-secondary btn" onclick="showPage('register')" style="width: 100%; margin-bottom: 16px;">Create Account</button>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
+         <p style="color: #888; font-size: 12px; margin-bottom: 8px;">Admin Access:</p>
+         <p style="color: #c9a96e; font-size: 11px; line-height: 1.4;">admin@tournament.com<br>
+           manager@esports.com<br>
+           organizer@championship.com</p>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div><!-- Profile Page -->
+    <div id="profile" class="page">
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Player Profile</h1>
+     <div class="grid grid-2">
+      <div class="card">
+       <h3 style="color: #c9a96e; margin-bottom: 20px;">Profile Information</h3>
+       <div id="profile-info">
+        <div style="display: flex; align-items: center; margin-bottom: 24px;">
+         <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #c9a96e, #b8941f); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;"><span style="font-size: 32px; font-weight: 700; color: #1a1a1a;" id="profile-avatar">?</span>
+         </div>
+         <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+           <h4 style="color: #f8f8f8; margin: 0;" id="profile-name">Guest Player</h4><span id="admin-badge" style="display: none; background: linear-gradient(135deg, #dc3545, #c82333); color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; text-transform: uppercase;">ADMIN</span>
+          </div>
+          <p style="color: #888;" id="profile-email">Not logged in</p>
+         </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+         <div>
+          <p style="color: #888; font-size: 14px;">Member Since</p>
+          <p style="color: #f8f8f8;" id="profile-joined">-</p>
+         </div>
+         <div>
+          <p style="color: #888; font-size: 14px;">Teams Joined</p>
+          <p style="color: #c9a96e; font-weight: 600;" id="profile-teams">0</p>
+         </div>
+        </div>
+       </div>
+       <div style="margin-top: 24px; display: flex; gap: 12px;"><button class="btn" onclick="showEditProfile()">Edit Profile</button> <button class="btn-secondary btn" onclick="logoutUser()">Logout</button>
+       </div>
+      </div>
+      <div class="card">
+       <h3 style="color: #c9a96e; margin-bottom: 20px;">Gaming Stats</h3>
+       <div style="display: grid; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 8px;"><span style="color: #ccc;">Tournaments Played</span> <span style="color: #c9a96e; font-weight: 600;" id="tournaments-played">0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 8px;"><span style="color: #ccc;">Matches Won</span> <span style="color: #28a745; font-weight: 600;" id="matches-won">0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 8px;"><span style="color: #ccc;">Total Score</span> <span style="color: #c9a96e; font-weight: 600;" id="total-score">0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 8px;"><span style="color: #ccc;">Rank</span> <span style="color: #ffc107; font-weight: 600;" id="player-rank">Unranked</span>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="card" style="margin-top: 24px;">
+      <h3 style="color: #c9a96e; margin-bottom: 20px;">My Teams</h3>
+      <div id="user-teams" class="grid grid-3"><!-- User's teams will be populated here -->
+      </div>
+     </div>
+     <div class="card" style="margin-top: 24px;">
+      <h3 style="color: #c9a96e; margin-bottom: 20px;">Recent Activity</h3>
+      <div id="user-activity"><!-- User's recent activity will be populated here -->
+      </div>
+     </div>
+    </div><!-- Admin -->
+    <div id="admin" class="page">
+     <h1 style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #c9a96e; letter-spacing: 1px; text-transform: uppercase;">Admin Dashboard</h1>
+     <div class="admin-grid">
+      <div class="admin-card">
+       <h3 style="color: #d4af37; margin-bottom: 16px;">Quick Stats</h3>
+       <p>Total Teams: <span id="admin-team-count">0</span></p>
+       <p>Active Matches: <span id="admin-match-count">0</span></p>
+       <p>Completed Matches: <span id="admin-completed-count">0</span></p>
+      </div>
+      <div class="admin-card">
+       <h3 style="color: #d4af37; margin-bottom: 16px;">Quick Actions</h3>
+       <div class="admin-actions"><button class="btn" onclick="showCreateMatchForm()">Create Match</button> <button class="btn-secondary btn" onclick="refreshData()">Refresh Data</button>
+       </div>
+      </div>
+     </div>
+     <h3 style="margin: 40px 0 24px 0; color: #f8f8f8;">Manage Teams</h3>
+     <div class="grid grid-2" id="admin-teams"><!-- Admin team management will be populated here -->
+     </div>
+     <h3 style="margin: 40px 0 24px 0; color: #f8f8f8;">Manage Matches</h3>
+     <div class="grid grid-2" id="admin-matches"><!-- Admin match management will be populated here -->
+     </div>
+    </div>
+   </div>
+  </main>
+  <script>
+        // Configuration
+        const defaultConfig = {
+            app_title: "Esports Tournament Manager",
+            tournament_name: "Championship Series 2024",
+            registration_title: "Team Registration",
+            background_color: "#1a1a1a",
+            surface_color: "#2a2a2a",
+            text_color: "#f8f8f8",
+            primary_action_color: "#c9a96e",
+            secondary_action_color: "#888888",
+            font_family: "Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+            font_size: 16
+        };
+
+        let currentData = [];
+        let isLoading = false;
+        let currentUser = null;
+
+        // API Client Wrapper
+        const apiClient = {
+            async request(endpoint, options = {}) {
+                try {
+                    const url = `${API_BASE}${endpoint}`;
+                    const response = await fetch(url, {
+                        ...options,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json().catch(() => ({ error: 'Request failed' }));
+                        throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error('API request failed:', error);
+                    throw error;
+                }
+            },
+
+            // Team operations
+            async getTeams() {
+                return this.request('/api/teams');
+            },
+
+            async createTeam(teamData) {
+                return this.request('/api/teams', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: teamData.name,
+                        members: teamData.members || ''
+                    })
+                });
+            },
+
+            async updateTeam(teamId, teamData) {
+                // Note: Backend doesn't have update endpoint, so we'll need to handle this
+                // For now, we'll create a new team and delete the old one, or just update locally
+                // Since backend doesn't support update, we'll skip this for now
+                console.warn('Team update not supported by backend API');
+                return { id: teamId, ...teamData };
+            },
+
+            async deleteTeam(teamId) {
+                // Note: Backend doesn't have delete endpoint, so we'll handle this locally
+                console.warn('Team delete not supported by backend API');
+                return { success: true };
+            },
+
+            // Match operations
+            async getMatches(tournamentId) {
+                if (!tournamentId) {
+                    // If no tournament ID, return empty array
+                    return [];
+                }
+                return this.request(`/api/tournaments/${tournamentId}/matches`);
+            },
+
+            async createMatch(matchData) {
+                // Note: Backend requires tournament_id and uses bracket generation
+                // For now, we'll handle this differently - matches are created via bracket generation
+                console.warn('Match creation should be done via tournament bracket generation');
+                return { id: Date.now(), ...matchData };
+            },
+
+            async updateMatch(matchId, matchData) {
+                // Backend has submit match result endpoint
+                if (matchData.winner_id) {
+                    return this.request(`/api/matches/${matchId}/result`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            winner_id: matchData.winner_id
+                        })
+                    });
+                }
+                return { id: matchId, ...matchData };
+            },
+
+            async deleteMatch(matchId) {
+                // Note: Backend doesn't have delete endpoint
+                console.warn('Match delete not supported by backend API');
+                return { success: true };
+            }
+        };
+
+        // Helper function to convert backend team format to frontend format
+        function convertBackendTeamToFrontend(backendTeam) {
+            return {
+                id: backendTeam.id.toString(),
+                type: 'team',
+                name: backendTeam.name,
+                email: '', // Backend doesn't store email
+                tournament: defaultConfig.tournament_name,
+                members: backendTeam.members || '',
+                status: 'registered',
+                score: 0, // Backend doesn't store score directly
+                createdAt: backendTeam.created_at || new Date().toISOString()
+            };
+        }
+
+        // Helper function to convert backend match format to frontend format
+        function convertBackendMatchToFrontend(backendMatch, teams) {
+            const teamA = teams.find(t => t.id === backendMatch.team_a_id);
+            const teamB = teams.find(t => t.id === backendMatch.team_b_id);
+            const winner = teams.find(t => t.id === backendMatch.winner_id);
+            
+            return {
+                id: backendMatch.id.toString(),
+                type: 'match',
+                name: `${teamA?.name || 'TBD'} vs ${teamB?.name || 'TBD'}`,
+                status: backendMatch.played ? 'completed' : 'scheduled',
+                score: winner ? `${winner.name} won` : null,
+                createdAt: new Date().toISOString()
+            };
+        }
+
+        // Initialize App - fetch data from backend
+        async function initializeApp() {
+            try {
+                isLoading = true;
+                
+                // Fetch teams from backend
+                const backendTeams = await apiClient.getTeams();
+                
+                // Fetch matches (we'll need a tournament ID, but for now we'll use empty array)
+                // In a real scenario, you'd need to get the active tournament first
+                const backendMatches = [];
+                
+                // Convert backend format to frontend format
+                const frontendTeams = backendTeams.map(convertBackendTeamToFrontend);
+                const frontendMatches = backendMatches.map(m => convertBackendMatchToFrontend(m, backendTeams));
+                
+                // Update currentData
+                currentData = [...frontendTeams, ...frontendMatches];
+                
+                // Update UI
+                updateUI();
+                updateAdminStats();
+                if (currentUser) {
+                    updateUserStats();
+                }
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                alert('Failed to load data from server. Please check if the backend is running.');
+            } finally {
+                isLoading = false;
+            }
+
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            // Check if trying to access admin page without admin privileges
+            if (pageId === 'admin') {
+                if (!currentUser || !currentUser.isAdmin) {
+                    alert('Access denied. Admin privileges required.');
+                    return;
+                }
+            }
+            
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            const navLink = document.querySelector(`[data-page="${pageId}"]`);
+            if (navLink) navLink.classList.add('active');
+        }
+
+        // Event listeners for navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+
+        // Admin email list - only these emails can access admin panel
+        const adminEmails = [
+            'admin@tournament.com',
+            'manager@esports.com',
+            'organizer@championship.com'
+        ];
+
+        // Check if user is admin
+        function isAdmin(email) {
+            return adminEmails.includes(email.toLowerCase());
+        }
+
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loginBtn = document.getElementById('login-btn');
+            const loginText = document.getElementById('login-text');
+            const loginLoading = document.getElementById('login-loading');
+            
+            loginText.style.display = 'none';
+            loginLoading.style.display = 'inline-block';
+            loginBtn.disabled = true;
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Simulate login process (in real app, this would authenticate with backend)
+            setTimeout(() => {
+                // Create user session
+                currentUser = {
+                    id: Date.now().toString(),
+                    email: email,
+                    name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+                    joinDate: new Date().toISOString(),
+                    avatar: email.charAt(0).toUpperCase(),
+                    isAdmin: isAdmin(email)
+                };
+
+                // Store in localStorage for persistence
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                updateUserInterface();
+                showPage('profile');
+                
+                // Reset form
+                document.getElementById('login-form').reset();
+                
+                loginText.style.display = 'inline';
+                loginLoading.style.display = 'none';
+                loginBtn.disabled = false;
+            }, 1500);
+        });
+
+        // Team registration
+        document.getElementById('registration-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (currentData.length >= 999) {
+                alert("Maximum limit of 999 teams reached. Please contact admin.");
+                return;
+            }
+
+            const registerBtn = document.getElementById('register-btn');
+            const registerText = document.getElementById('register-text');
+            const registerLoading = document.getElementById('register-loading');
+            
+            registerText.style.display = 'none';
+            registerLoading.style.display = 'inline-block';
+            registerBtn.disabled = true;
+
+            const teamData = {
+                id: Date.now().toString(),
+                type: 'team',
+                name: document.getElementById('team-name').value,
+                email: document.getElementById('captain-email').value,
+                tournament: 'Championship Series 2024',
+                members: document.getElementById('team-members').value,
+                status: 'registered',
+                score: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const result = await apiClient.createTeam(teamData);
+                // Convert backend response to frontend format and add to currentData
+                const frontendTeam = convertBackendTeamToFrontend(result);
+                currentData.push(frontendTeam);
+                updateUI();
+                document.getElementById('registration-form').reset();
+                showPage('teams');
+            } catch (error) {
+                alert('Registration failed: ' + error.message);
+            }
+
+            registerText.style.display = 'inline';
+            registerLoading.style.display = 'none';
+            registerBtn.disabled = false;
+        });
+
+        // Update UI based on data
+        function updateUI() {
+            const teams = currentData.filter(item => item.type === 'team');
+            const matches = currentData.filter(item => item.type === 'match');
+            
+            updateTeamCount(teams.length);
+            updateTeamsList(teams);
+            updateLeaderboard(teams);
+            updateBracket(teams);
+            updateRecentMatches(matches);
+            updateAdminTeams(teams);
+            updateAdminMatches(matches);
+        }
+
+        function updateTeamCount(count) {
+            const teamCountEl = document.getElementById('team-count');
+            if (teamCountEl) teamCountEl.textContent = count;
+        }
+
+        function updateTeamsList(teams) {
+            const container = document.getElementById('teams-list');
+            if (!container) return;
+
+            container.innerHTML = teams.map(team => `
+                <div class="card">
+                    <h3 style="color: #c9a96e; margin-bottom: 12px;">${team.name}</h3>
+                    <p style="color: #888; margin-bottom: 8px;">Captain: ${team.email}</p>
+                    <p style="color: #ccc; margin-bottom: 16px;">Members: ${team.members}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="status-badge status-${team.status}">${team.status}</span>
+                        <span style="color: #c9a96e; font-weight: 600;">Score: ${team.score}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateLeaderboard(teams) {
+            const container = document.getElementById('leaderboard-list');
+            if (!container) return;
+
+            const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
+            
+            container.innerHTML = sortedTeams.map((team, index) => `
+                <div class="leaderboard-item">
+                    <div class="rank">${index + 1}</div>
+                    <div class="team-info">
+                        <h4 style="color: #f8f8f8; margin-bottom: 4px;">${team.name}</h4>
+                        <p style="color: #888; font-size: 14px;">${team.members.split(',').length} members</p>
+                    </div>
+                    <div class="score">${team.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateBracket(teams) {
+            const container = document.getElementById('bracket-view');
+            if (!container) return;
+
+            if (teams.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No teams registered yet</p>';
+                return;
+            }
+
+            // Simple bracket visualization
+            const rounds = Math.ceil(Math.log2(teams.length));
+            let bracketHTML = '';
+
+            for (let round = 1; round <= rounds; round++) {
+                const matchesInRound = Math.pow(2, rounds - round);
+                bracketHTML += `
+                    <div class="bracket-round">
+                        <h4 style="color: #c9a96e; margin-bottom: 16px; text-align: center;">
+                            ${round === rounds ? 'Final' : round === rounds - 1 ? 'Semi-Final' : `Round ${round}`}
+                        </h4>
+                `;
+
+                for (let match = 0; match < matchesInRound; match++) {
+                    const team1 = teams[match * 2] || { name: 'TBD', score: 0 };
+                    const team2 = teams[match * 2 + 1] || { name: 'TBD', score: 0 };
+                    
+                    bracketHTML += `
+                        <div class="bracket-match">
+                            <div class="match-team">
+                                <span>${team1.name}</span>
+                                <span>${team1.score}</span>
+                            </div>
+                            <div class="match-team">
+                                <span>${team2.name}</span>
+                                <span>${team2.score}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                bracketHTML += '</div>';
+            }
+
+            container.innerHTML = bracketHTML;
+        }
+
+        function updateRecentMatches(matches) {
+            const container = document.getElementById('recent-matches');
+            if (!container) return;
+
+            if (matches.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No matches scheduled yet</p>';
+                return;
+            }
+
+            container.innerHTML = matches.slice(-4).map(match => `
+                <div class="card">
+                    <h4 style="color: #c9a96e; margin-bottom: 12px;">${match.name}</h4>
+                    <p style="color: #ccc; margin-bottom: 8px;">Status: <span class="status-badge status-${match.status}">${match.status}</span></p>
+                    <p style="color: #888;">Score: ${match.score || 'TBD'}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateAdminTeams(teams) {
+            const container = document.getElementById('admin-teams');
+            if (!container) return;
+
+            container.innerHTML = teams.map(team => `
+                <div class="admin-card">
+                    <h4 style="color: #c9a96e; margin-bottom: 12px;">${team.name}</h4>
+                    <p style="color: #ccc; margin-bottom: 8px;">Captain: ${team.email}</p>
+                    <p style="color: #ccc; margin-bottom: 16px;">Score: ${team.score}</p>
+                    <div class="admin-actions">
+                        <button class="btn" onclick="editTeamScore('${team.id}')">Edit Score</button>
+                        <button class="btn-danger btn" onclick="deleteTeam('${team.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateAdminMatches(matches) {
+            const container = document.getElementById('admin-matches');
+            if (!container) return;
+
+            container.innerHTML = matches.map(match => `
+                <div class="admin-card">
+                    <h4 style="color: #c9a96e; margin-bottom: 12px;">${match.name}</h4>
+                    <p style="color: #ccc; margin-bottom: 8px;">Status: ${match.status}</p>
+                    <p style="color: #ccc; margin-bottom: 16px;">Score: ${match.score || 'TBD'}</p>
+                    <div class="admin-actions">
+                        <button class="btn" onclick="editMatch('${match.id}')">Edit</button>
+                        <button class="btn-danger btn" onclick="deleteMatch('${match.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateAdminStats() {
+            const teams = currentData.filter(item => item.type === 'team');
+            const matches = currentData.filter(item => item.type === 'match');
+            const completedMatches = matches.filter(match => match.status === 'completed');
+
+            const teamCountEl = document.getElementById('admin-team-count');
+            const matchCountEl = document.getElementById('admin-match-count');
+            const completedCountEl = document.getElementById('admin-completed-count');
+
+            if (teamCountEl) teamCountEl.textContent = teams.length;
+            if (matchCountEl) matchCountEl.textContent = matches.length;
+            if (completedCountEl) completedCountEl.textContent = completedMatches.length;
+        }
+
+        // Admin functions
+        async function editTeamScore(teamId) {
+            const team = currentData.find(item => item.id === teamId);
+            if (!team) return;
+
+            const newScore = prompt(`Enter new score for ${team.name}:`, team.score);
+            if (newScore === null) return;
+
+            const updatedTeam = { ...team, score: parseInt(newScore) || 0 };
+            
+            try {
+                await apiClient.updateTeam(teamId, updatedTeam);
+                // Update local data
+                const index = currentData.findIndex(item => item.id === teamId);
+                if (index !== -1) {
+                    currentData[index] = updatedTeam;
+                    updateUI();
+                }
+            } catch (error) {
+                alert('Failed to update team score: ' + error.message);
+            }
+        }
+
+        async function deleteTeam(teamId) {
+            const team = currentData.find(item => item.id === teamId);
+            if (!team) return;
+
+            if (confirm(`Are you sure you want to delete team "${team.name}"?`)) {
+                try {
+                    await apiClient.deleteTeam(teamId);
+                    // Remove from local data
+                    currentData = currentData.filter(item => item.id !== teamId);
+                    updateUI();
+                } catch (error) {
+                    alert('Failed to delete team: ' + error.message);
+                }
+            }
+        }
+
+        async function deleteMatch(matchId) {
+            const match = currentData.find(item => item.id === matchId);
+            if (!match) return;
+
+            if (confirm(`Are you sure you want to delete match "${match.name}"?`)) {
+                try {
+                    await apiClient.deleteMatch(matchId);
+                    // Remove from local data
+                    currentData = currentData.filter(item => item.id !== matchId);
+                    updateUI();
+                } catch (error) {
+                    alert('Failed to delete match: ' + error.message);
+                }
+            }
+        }
+
+        function showCreateMatchForm() {
+            const matchName = prompt('Enter match name:');
+            if (!matchName) return;
+
+            createMatch(matchName);
+        }
+
+        async function createMatch(name) {
+            if (currentData.length >= 999) {
+                alert("Maximum limit of 999 items reached. Please delete some items first.");
+                return;
+            }
+
+            const matchData = {
+                id: Date.now().toString(),
+                type: 'match',
+                name: name,
+                status: 'scheduled',
+                score: null,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const result = await apiClient.createMatch(matchData);
+                // Add to local data
+                currentData.push(result);
+                updateUI();
+            } catch (error) {
+                alert('Failed to create match: ' + error.message);
+            }
+        }
+
+        async function refreshData() {
+            try {
+                isLoading = true;
+                
+                // Fetch teams from backend
+                const backendTeams = await apiClient.getTeams();
+                
+                // Fetch matches (we'll need a tournament ID, but for now we'll use empty array)
+                const backendMatches = [];
+                
+                // Convert backend format to frontend format
+                const frontendTeams = backendTeams.map(convertBackendTeamToFrontend);
+                const frontendMatches = backendMatches.map(m => convertBackendMatchToFrontend(m, backendTeams));
+                
+                // Update currentData
+                currentData = [...frontendTeams, ...frontendMatches];
+                
+                // Update UI
+                updateUI();
+                updateAdminStats();
+                if (currentUser) {
+                    updateUserStats();
+                }
+                
+                alert('Data refreshed successfully!');
+            } catch (error) {
+                console.error('Failed to refresh data:', error);
+                alert('Failed to refresh data: ' + error.message);
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // User management functions
+        function updateUserInterface() {
+            const profileNav = document.getElementById('profile-nav');
+            const adminNav = document.getElementById('admin-nav');
+            
+            if (currentUser) {
+                // Show profile nav
+                profileNav.style.display = 'block';
+                
+                // Show admin nav only for admins
+                if (currentUser.isAdmin) {
+                    adminNav.style.display = 'block';
+                } else {
+                    adminNav.style.display = 'none';
+                }
+                
+                // Update profile information
+                document.getElementById('profile-name').textContent = currentUser.name;
+                document.getElementById('profile-email').textContent = currentUser.email;
+                document.getElementById('profile-avatar').textContent = currentUser.avatar;
+                document.getElementById('profile-joined').textContent = new Date(currentUser.joinDate).toLocaleDateString();
+                
+                // Show admin badge if user is admin
+                const adminBadge = document.getElementById('admin-badge');
+                if (currentUser.isAdmin) {
+                    adminBadge.style.display = 'inline-block';
+                } else {
+                    adminBadge.style.display = 'none';
+                }
+                
+                // Update stats (calculate from user's teams)
+                updateUserStats();
+            } else {
+                // Hide profile and admin nav
+                profileNav.style.display = 'none';
+                adminNav.style.display = 'none';
+                
+                // Reset profile to guest
+                document.getElementById('profile-name').textContent = 'Guest Player';
+                document.getElementById('profile-email').textContent = 'Not logged in';
+                document.getElementById('profile-avatar').textContent = '?';
+                document.getElementById('profile-joined').textContent = '-';
+            }
+        }
+
+        function updateUserStats() {
+            if (!currentUser) return;
+            
+            const userTeams = currentData.filter(item => 
+                item.type === 'team' && item.email === currentUser.email
+            );
+            
+            const totalScore = userTeams.reduce((sum, team) => sum + (team.score || 0), 0);
+            const tournamentsPlayed = userTeams.length;
+            const matchesWon = userTeams.filter(team => team.score > 0).length;
+            
+            document.getElementById('profile-teams').textContent = userTeams.length;
+            document.getElementById('tournaments-played').textContent = tournamentsPlayed;
+            document.getElementById('matches-won').textContent = matchesWon;
+            document.getElementById('total-score').textContent = totalScore;
+            
+            // Calculate rank based on total score
+            let rank = 'Unranked';
+            if (totalScore >= 1000) rank = 'Champion';
+            else if (totalScore >= 500) rank = 'Expert';
+            else if (totalScore >= 200) rank = 'Advanced';
+            else if (totalScore >= 50) rank = 'Intermediate';
+            else if (totalScore > 0) rank = 'Beginner';
+            
+            document.getElementById('player-rank').textContent = rank;
+            
+            // Update user teams display
+            updateUserTeams(userTeams);
+            updateUserActivity(userTeams);
+        }
+
+        function updateUserTeams(userTeams) {
+            const container = document.getElementById('user-teams');
+            if (!container) return;
+            
+            if (userTeams.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No teams joined yet</p>';
+                return;
+            }
+            
+            container.innerHTML = userTeams.map(team => `
+                <div class="card" style="margin-bottom: 0;">
+                    <h4 style="color: #c9a96e; margin-bottom: 8px;">${team.name}</h4>
+                    <p style="color: #ccc; font-size: 14px; margin-bottom: 8px;">Score: ${team.score}</p>
+                    <span class="status-badge status-${team.status}">${team.status}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateUserActivity(userTeams) {
+            const container = document.getElementById('user-activity');
+            if (!container) return;
+            
+            if (userTeams.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No recent activity</p>';
+                return;
+            }
+            
+            const activities = userTeams.map(team => ({
+                action: 'Joined team',
+                target: team.name,
+                date: new Date(team.createdAt).toLocaleDateString(),
+                status: team.status
+            }));
+            
+            container.innerHTML = activities.slice(-5).map(activity => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; margin-bottom: 8px;">
+                    <div>
+                        <p style="color: #f8f8f8; margin-bottom: 4px;">${activity.action} "${activity.target}"</p>
+                        <p style="color: #888; font-size: 12px;">${activity.date}</p>
+                    </div>
+                    <span class="status-badge status-${activity.status}">${activity.status}</span>
+                </div>
+            `).join('');
+        }
+
+        function showEditProfile() {
+            if (!currentUser) return;
+            
+            const newName = prompt('Enter new display name:', currentUser.name);
+            if (newName && newName.trim()) {
+                currentUser.name = newName.trim();
+                currentUser.avatar = newName.charAt(0).toUpperCase();
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                updateUserInterface();
+            }
+        }
+
+        function logoutUser() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                updateUserInterface();
+                showPage('home');
+            }
+        }
+
+        function checkUserSession() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUserInterface();
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            checkUserSession();
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f66c067387ff63',t:'MTc2MzI5MDE2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
